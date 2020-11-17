@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <title>0 - Blueprints</title>
+        <!-- <link rel="stylesheet" href="Style.css"> -->
+        <script src="three.min.js"></script>     
+    </head>
+    <body>
+    </body>
+</html>
+<script>    
+    let scene, camera, renderer, flag;
+    let ADD = 0.01
+
+    let createFlag = () => {
+        let geometry = new THREE.PlaneGeometry(4, 5, 50, 30)
+
+        const loader = new THREE.TextureLoader()
+
+        let material = new THREE.MeshBasicMaterial({
+          map: loader.load('./textures/cat.jpg')
+        })
+
+        // let material = new THREE.MeshBasicMaterial({
+        //   color: 0x000000,
+        //   wireframe: true
+        // })
+
+        flag = new THREE.Mesh(geometry, material)
+        scene.add(flag)
+    }
+    
+    // set up the environment - 
+    // initiallize scene, camera, objects and renderer
+    let init = function() {
+        // 1. create the scene
+        scene = new THREE.Scene()
+        scene.background = new THREE.Color(0xffffff)
+        
+        // 2. create an locate the camera
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000)
+        camera.position.z = 5
+        
+        // 3. create and locate the objects on the scene
+        createFlag()
+
+        // 4. create the renderer   
+        renderer = new THREE.WebGLRenderer({ antialias: true })
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        
+        document.body.appendChild(renderer.domElement)
+    };
+
+    // main animation loop - calls every 50-60 ms.
+    let mainLoop = function() {
+        flag.geometry.vertices.map(v => {
+          v.z = 0.1 * Math.sin(v.x * 6)
+        })
+
+        flag.geometry.verticesNeedUpdate = true
+        
+        renderer.render(scene, camera)
+        requestAnimationFrame(mainLoop);
+    };
+    
+    ///////////////////////////////////////////////
+    init();
+    mainLoop();
+</script>
